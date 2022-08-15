@@ -12,13 +12,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  late ScrollController _scrollcont;
   @override
-  void initState() {
-    _scrollcont = ScrollController();
-    super.initState();
-  }
-
   Widget build(BuildContext context) {
     return Scaffold(body: Body());
   }

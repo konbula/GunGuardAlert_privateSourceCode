@@ -12,17 +12,27 @@ class Body extends StatefulWidget {
 class _BodyState extends State<Body> {
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-        child: SlidingUpPanel(
-      panelBuilder: (sc) => PanelWidget(sc),
-      minHeight: 300,
-      maxHeight: 650,
-      body: Row(
-        children: const [
-          homeSearchBar(),
-        ],
-      ),
-    ));
+    return Scaffold(
+        body: SlidingUpPanel(
+            panelBuilder: (sc) => PanelWidget(sc),
+            //minHeight: 300,
+            //maxHeight: 650,
+            body: SafeArea(
+              child: Column(children: [
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Row(
+                    children: [
+                      Expanded(child: homeSearchBar()),
+                      CircleAvatar(
+                        backgroundColor: Colors.brown.shade800,
+                        child: const Text('AH'),
+                      )
+                    ],
+                  ),
+                )
+              ]),
+            )));
   }
 }
 
