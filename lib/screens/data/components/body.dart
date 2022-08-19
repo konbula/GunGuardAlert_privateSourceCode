@@ -22,7 +22,21 @@ class _BodyState extends State<Body> {
           SizedBox(
             height: 10,
           ),
-          dataSearchBar(),
+          Padding(
+            padding: const EdgeInsets.only(
+              left: 10.0,
+              right: 10,
+            ),
+            child: Row(
+              children: [
+                Expanded(child: dataSearchBar()),
+                CircleAvatar(
+                  backgroundColor: Colors.brown.shade800,
+                  child: const Text('AH'),
+                )
+              ],
+            ),
+          ),
           homocideHeader(),
           homocideCarousel(),
           SizedBox(

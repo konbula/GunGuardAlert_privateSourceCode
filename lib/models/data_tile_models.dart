@@ -21,12 +21,12 @@ class HomocideDataTile {
 final List<HomocideDataTile> homocideDataTiles = [
   HomocideDataTile(
       imageUrl: 'imageUrl',
-      title: 'Gun Deaths in Atlanta organ piano',
+      title: 'Phunny Gun Deaths in Atlanta',
       dateOf: 'June 31, 2018',
       graphTitle: 'Deaths v year',
       type: 'Homocides',
       description:
-          "According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...",
+          "According to the CDC we think that NIIG...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...",
       listData: [
         [2020, 175],
         // [2020, 1265],

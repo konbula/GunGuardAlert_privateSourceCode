@@ -13,14 +13,14 @@ class _dataSearchBarState extends State<dataSearchBar> {
   Widget build(BuildContext context) {
     return Container(
         // Search Bar
-        margin: const EdgeInsets.symmetric(horizontal: 10),
+        margin: const EdgeInsets.only(right: 10),
         padding: const EdgeInsets.symmetric(horizontal: 10),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(25),
           boxShadow: [
             BoxShadow(
-              offset: const Offset(0, 10),
+              offset: const Offset(0, 5),
               blurRadius: 5,
               color: const Color.fromARGB(255, 0, 0, 0).withOpacity(0.13),
             )

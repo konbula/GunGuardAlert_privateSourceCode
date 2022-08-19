@@ -111,6 +111,19 @@ class _DataTileScreenState extends State<DataTileScreen> {
         controller: sc,
         children: <Widget>[
           SizedBox(
+            height: 15,
+          ),
+          Align(
+            alignment: Alignment.topCenter,
+            child: Container(
+              height: 5,
+              width: 40,
+              decoration: BoxDecoration(
+                  color: Color.fromARGB(255, 145, 143, 143),
+                  borderRadius: BorderRadius.circular(10)),
+            ),
+          ),
+          SizedBox(
             height: 36,
           ),
           buildAboutText(),

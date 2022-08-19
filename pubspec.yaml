@@ -36,6 +36,10 @@ dependencies:
   cupertino_icons: ^1.0.2
   syncfusion_flutter_charts: ^20.2.38
   sliding_up_panel: ^2.0.0+1
+  google_maps_flutter: ^2.1.10
+  dio: ^4.0.6
+  flutter_polyline_points: ^1.0.0
+  http: ^0.13.5
 
 dev_dependencies:
   flutter_test:
