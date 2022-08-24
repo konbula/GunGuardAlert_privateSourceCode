@@ -13,7 +13,7 @@ class _homeSearchBarState extends State<homeSearchBar> {
   Widget build(BuildContext context) {
     return Container(
       // Search Bar
-      margin: const EdgeInsets.only(right: 10),
+      margin: const EdgeInsets.only(right: 0, left: 10),
       padding: const EdgeInsets.symmetric(horizontal: 10),
       decoration: BoxDecoration(
         color: Colors.white,

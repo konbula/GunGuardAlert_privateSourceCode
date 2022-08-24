@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:guntrackattempt1/screens/home/components/profile_popup.dart';
 import 'package:guntrackattempt1/screens/home/components/search_bar.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
@@ -23,6 +24,7 @@ class _BodyState extends State<Body> {
   }
 
   void addMarker(LatLng pos) {}
+  String initials = "2";
   Widget build(BuildContext context) {
     return Scaffold(
         body: SlidingUpPanel(
@@ -47,16 +49,43 @@ class _BodyState extends State<Body> {
                   Align(
                     alignment: Alignment.topCenter,
                     child: Padding(
-                      padding: const EdgeInsets.all(10.0),
+                      padding: const EdgeInsets.all(0.0),
                       child: Column(
                         children: [
                           Row(
                             children: [
-                              Expanded(child: homeSearchBar()),
-                              CircleAvatar(
-                                backgroundColor: Colors.brown.shade800,
-                                child: const Text('AH'),
-                              )
+                              const Expanded(child: homeSearchBar()),
+                              profile_popup(
+                                  menulist: [
+                                    //make the profile be able to drop down to reveal more info
+                                    PopupMenuItem(
+                                        child: ListTile(
+                                      leading: Icon(Icons.person),
+                                      title: Text("Profile"),
+                                    )),
+                                    PopupMenuItem(
+                                        child: ListTile(
+                                      leading: Icon(Icons.label_rounded),
+                                      title: Text("Learn More"),
+                                    )),
+                                    PopupMenuDivider(),
+                                    PopupMenuItem(
+                                        child: ListTile(
+                                      leading: Icon(Icons.info),
+                                      title: Text("About"),
+                                    )),
+                                  ],
+                                  icon: (initials == "")
+                                      ? CircleAvatar(
+                                          backgroundColor:
+                                              Colors.brown.shade800,
+                                          child: Icon(Icons.person),
+                                        )
+                                      : CircleAvatar(
+                                          backgroundColor:
+                                              Colors.brown.shade800,
+                                          child: const Text("BK"),
+                                        ))
                             ],
                           ),
                           Align(
