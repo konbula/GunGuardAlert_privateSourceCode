@@ -18,7 +18,7 @@ class _BodyState extends State<Body> with TickerProviderStateMixin {
     return SafeArea(
         child: Column(
       children: [
-        SizedBox(
+        const SizedBox(
           height: 10,
         ),
         Padding(
@@ -33,22 +33,20 @@ class _BodyState extends State<Body> with TickerProviderStateMixin {
             ],
           ),
         ),
-        SizedBox(
+        const SizedBox(
           height: 10,
         ),
-        Container(
-          child: TabBar(labelColor: Colors.black, controller: tabCont, tabs: [
-            Tab(
-              text: "Recent",
-            ),
-            Tab(
-              text: "Legislation",
-            ),
-            Tab(
-              text: "Shootinngs",
-            )
-          ]),
-        ),
+        TabBar(labelColor: Colors.black, controller: tabCont, tabs: const [
+          Tab(
+            text: "Recent",
+          ),
+          Tab(
+            text: "Legislation",
+          ),
+          Tab(
+            text: "Shootings",
+          )
+        ]),
         Expanded(
           // width: MediaQuery.of(context).size.width,
           // height: double.infinity,

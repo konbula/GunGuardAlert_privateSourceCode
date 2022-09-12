@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class profile extends StatelessWidget {
-  profile({Key? key, required this.initial}) : super(key: key);
+class profilePage extends StatelessWidget {
+  profilePage({Key? key, required this.initial}) : super(key: key);
   String initial;
   @override
   Widget build(BuildContext context) {
@@ -15,13 +15,13 @@ class profile extends StatelessWidget {
               alignment: Alignment.topLeft,
               child: IconButton(
                 onPressed: () => Navigator.pop(context),
-                icon: Icon(Icons.arrow_back),
+                icon: const Icon(Icons.arrow_back),
                 color: Colors.black,
                 iconSize: 30,
               ),
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 50,
           ),
           Align(
@@ -30,7 +30,7 @@ class profile extends StatelessWidget {
                   ? CircleAvatar(
                       radius: 60,
                       backgroundColor: Colors.brown.shade800,
-                      child: Icon(
+                      child: const Icon(
                         Icons.person,
                         size: 50,
                       ),

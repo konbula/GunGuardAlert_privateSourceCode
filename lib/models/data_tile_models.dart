@@ -21,12 +21,12 @@ class HomocideDataTile {
 final List<HomocideDataTile> homocideDataTiles = [
   HomocideDataTile(
       imageUrl: 'imageUrl',
-      title: 'Phunny Gun Deaths in Atlanta',
+      title: 'Gun Deaths in Atlanta',
       dateOf: 'June 31, 2018',
       graphTitle: 'Deaths v year',
       type: 'Homocides',
       description:
-          "According to the CDC we think that NIIG...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...",
+          "According to the CDC we think that ..According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...According to the CDC we think that...",
       listData: [
         [2020, 175],
         // [2020, 1265],
@@ -455,14 +455,14 @@ final List<MSDataTile> MSDataTiles = [
 ];
 
 //SUICIDES TILES
-class suicideDataTile {
+class SuicideDataTile {
   String title;
   String dateOf;
   String graphTitle;
   String imageUrl;
   String type;
   List listData;
-  suicideDataTile({
+  SuicideDataTile({
     required this.imageUrl,
     required this.title,
     required this.dateOf,
@@ -472,8 +472,8 @@ class suicideDataTile {
   });
 }
 
-final List<suicideDataTile> suicideDataTiles = [
-  suicideDataTile(
+final List<SuicideDataTile> suicideDataTiles = [
+  SuicideDataTile(
       imageUrl: 'imageUrl',
       title: 'Gun related Suicides in Atlanta',
       dateOf: 'June 31, 2018',
@@ -483,7 +483,7 @@ final List<suicideDataTile> suicideDataTiles = [
         [0, 1],
         [1, 2]
       ]),
-  suicideDataTile(
+  SuicideDataTile(
       imageUrl: 'imageUrl',
       title: 'Gun related Suicides in Brazil',
       dateOf: 'may 3, 2008',
@@ -493,7 +493,7 @@ final List<suicideDataTile> suicideDataTiles = [
         [0, 0],
         [1, 1]
       ]),
-  suicideDataTile(
+  SuicideDataTile(
       imageUrl: 'imageUrl',
       title: 'Gun related Suicides in paris',
       dateOf: 'march 1, 2017',

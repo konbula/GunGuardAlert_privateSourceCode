@@ -3,8 +3,6 @@ import 'package:guntrackattempt1/models/data_tile_models.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
-import 'components/body.dart';
-
 class SalesData {
   SalesData(this.year, this.sales);
   int year;

@@ -18,7 +18,7 @@ class _suicideCarouselState extends State<suicideCarousel> {
         scrollDirection: Axis.horizontal,
         itemCount: MSDataTiles.length,
         itemBuilder: (BuildContext context, int index) {
-          suicideDataTile dataTile = suicideDataTiles[index];
+          SuicideDataTile dataTile = suicideDataTiles[index];
           double fontSizeChooser = 20;
           if (dataTile.title.length > 34) {
             fontSizeChooser = 15;
