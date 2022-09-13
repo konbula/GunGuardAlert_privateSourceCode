@@ -94,26 +94,37 @@ class _BodyState extends State<Body> {
 
   late Future blarg;
   List RealnewAdresses = ["1206 sherwood rd glenview illinois"];
+
+  void ChangeRealnewAdresses(List newThing) {
+    setState(() {
+      RealnewAdresses = newThing;
+    });
+  }
+
   void initState() {
     blarg = convertAddressToLatLonList(RealnewAdresses);
     reloadWebPagetimer = Timer.periodic(
         const Duration(seconds: 60), (Timer t) => reloadWebView());
-    convertAddressToLatLonList(RealnewAdresses).then((value) {
-      setState(() {
-        List newAdresses() {
-          var b = addShootings(Splitter(title!));
-          List finalList = [];
-          for (var i = 0; i < b.length; i++) {
-            finalList.add(
-                b[i].state + ", " + b[i].cityOrCounty + ", " + b[i].address);
-          }
-          return finalList;
-        }
+    print(RealnewAdresses);
 
-        RealnewAdresses = newAdresses();
-      });
-    });
     super.initState();
+
+    // List newAdresses() {
+    //   var b = addShootings(Splitter(title!));
+    //   List finalList = [];
+    //   for (var i = 0; i < b.length; i++) {
+    //     finalList
+    //         .add(b[i].state + " " + b[i].cityOrCounty + " " + b[i].address);
+    //   }
+    //   return finalList;
+    // }
+
+    // convertAddressToLatLonList(newAdresses()).then((List result) {
+    //   setState(() {
+    //     RealnewAdresses = result;
+    //   });
+    // });
+    // print(RealnewAdresses);
   }
 
   MapController? mapController;
@@ -132,6 +143,23 @@ class _BodyState extends State<Body> {
               final html = await wvController?.runJavascriptReturningResult(
                   'new XMLSerializer().serializeToString(document)');
               getWebsiteData(json.decode(html ?? ""));
+
+              List newAdresses() {
+                var b = addShootings(Splitter(title!));
+                List finalList = [];
+                for (var i = 0; i < b.length; i++) {
+                  finalList.add(b[i].state +
+                      " " +
+                      b[i].cityOrCounty +
+                      " " +
+                      b[i].address);
+                }
+                return finalList;
+              }
+
+              ChangeRealnewAdresses(newAdresses());
+
+              //print(RealnewAdresses);
             },
           ),
         ),
@@ -148,8 +176,8 @@ class _BodyState extends State<Body> {
                     child: Stack(children: [
               title == null
                   ? const Center(child: CircularProgressIndicator())
-                  : FutureBuilder(
-                      future: blarg,
+                  : FutureBuilder<List>(
+                      future: convertAddressToLatLonList(RealnewAdresses),
                       builder: ((context, snapshot) {
                         if (!snapshot.hasData) {
                           return CircularProgressIndicator();
@@ -161,30 +189,43 @@ class _BodyState extends State<Body> {
                         //     .replaceAll(",", "")
                         //     .split(" ")[1]);
 
-                        // void newAdresses() {
-                        //   var b = addShootings(Splitter(title!));
-                        //   List finalList = [];
-                        //   for (var i = 0; i < b.length; i++) {
-                        //     finalList.add(b[i].state +
-                        //         ", " +
-                        //         b[i].cityOrCounty +
-                        //         ", " +
-                        //         b[i].address);
-                        //   }
+                        List newAdresses() {
+                          var b = addShootings(Splitter(title!));
+                          List finalList = [];
+                          for (var i = 0; i < b.length; i++) {
+                            finalList.add(b[i].state +
+                                " " +
+                                b[i].cityOrCounty +
+                                " " +
+                                b[i].address);
+                          }
+                          return finalList;
+                        }
 
-                        //   setState(() {
-                        //     RealnewAdresses = finalList;
-                        //   });
-                        // }
+                        Future<List> convertedToLatLongList =
+                            convertAddressToLatLonList(newAdresses());
+                        List cheese = [];
+                        void doSomething() async {
+                          List blah = await convertedToLatLongList;
+                          cheese.add(blah);
+                          //debugPrint(cheese.toString());
+                        }
 
+                        doSomething();
+                        doSomething();
+                        debugPrint(snapshot.data.toString());
                         List<Marker> _getMarkers() {
                           List<Marker> markers = [];
+
+                          //experiment
+
                           List blargList = snapshot.data
                               .toString()
                               .replaceAll(RegExp("\\[", unicode: true), "")
                               .replaceAll(RegExp("\\]", unicode: true), "")
                               .replaceAll(",", "")
                               .split(" ");
+
                           for (var x = 0; x < blargList.length; x++) {
                             if ((x % 2 == 0) &
                                 (blargList.length > 1) &
