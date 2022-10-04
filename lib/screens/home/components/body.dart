@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:flutter/scheduler.dart';
 import 'package:guntrackattempt1/models/shooting_info_model.dart';
 import 'package:html/parser.dart' as parser;
 import 'package:html/dom.dart' as dom;
@@ -8,6 +9,8 @@ import 'package:http/http.dart' as http;
 import 'package:webview_flutter/webview_flutter.dart';
 
 //all other imports
+import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/link.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
@@ -26,7 +29,7 @@ class Body extends StatefulWidget {
 
 class _BodyState extends State<Body> {
   String? title;
-
+  String HomeAddress = "1943 N Gary Ave, Tulsa Oklahoma";
   void getWebsiteData(String rawHtml) async {
     dom.Document html = parser.parse(rawHtml);
     final title = html.querySelector('tbody')?.innerHtml.trim();
@@ -76,6 +79,7 @@ class _BodyState extends State<Body> {
     var a = 0.5 -
         c((lat2 - lat1) * p) / 2 +
         c(lat1 * p) * c(lat2 * p) * (1 - c((lon2 - lon1) * p)) / 2;
+    //to miles using 0.621371 conversion
     return 0.621371 * 12742 * asin(sqrt(a));
   }
 
@@ -93,6 +97,7 @@ class _BodyState extends State<Body> {
   }
 
   late Future blarg;
+
   List RealnewAdresses = ["1206 sherwood rd glenview illinois"];
 
   void ChangeRealnewAdresses(List newThing) {
@@ -103,9 +108,9 @@ class _BodyState extends State<Body> {
 
   void initState() {
     blarg = convertAddressToLatLonList(RealnewAdresses);
+
     reloadWebPagetimer = Timer.periodic(
         const Duration(seconds: 60), (Timer t) => reloadWebView());
-    print(RealnewAdresses);
 
     super.initState();
 
@@ -129,6 +134,37 @@ class _BodyState extends State<Body> {
 
   MapController? mapController;
   LatLng homePos = LatLng(42.07659479554499, -87.76737549957654);
+
+  bool isSafe = true;
+
+  void safetyChange(List blah) async {
+    int tick = 0;
+    List safetyChangeDistance = await convertAddressToLatLonList([HomeAddress]);
+
+    for (var i in blah) {
+      List addressLocation = await convertAddressToLatLonList([i]);
+      if (calculateDistance(
+              safetyChangeDistance[0][0],
+              safetyChangeDistance[0][1],
+              addressLocation[0][0],
+              safetyChangeDistance[0][1]) <=
+          10) {
+        print(calculateDistance(
+            safetyChangeDistance[0][0],
+            safetyChangeDistance[0][1],
+            addressLocation[0][0],
+            safetyChangeDistance[0][1]));
+        tick += 1;
+      }
+    }
+    if (tick > 0) {
+      isSafe = false;
+    } else {
+      isSafe = true;
+    }
+
+    print(isSafe);
+  }
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -157,9 +193,8 @@ class _BodyState extends State<Body> {
                 return finalList;
               }
 
+              safetyChange(newAdresses());
               ChangeRealnewAdresses(newAdresses());
-
-              //print(RealnewAdresses);
             },
           ),
         ),
@@ -180,7 +215,7 @@ class _BodyState extends State<Body> {
                       future: convertAddressToLatLonList(RealnewAdresses),
                       builder: ((context, snapshot) {
                         if (!snapshot.hasData) {
-                          return CircularProgressIndicator();
+                          return Center(child: CircularProgressIndicator());
                         }
                         // return Text(snapshot.data
                         //     .toString()
@@ -213,7 +248,7 @@ class _BodyState extends State<Body> {
 
                         doSomething();
                         doSomething();
-                        debugPrint(snapshot.data.toString());
+
                         List<Marker> _getMarkers() {
                           List<Marker> markers = [];
 
@@ -420,10 +455,68 @@ class _BodyState extends State<Body> {
       ? const Center(child: CircularProgressIndicator())
       : ListView(controller: sc, children: [
           Container(
+            margin: const EdgeInsets.all(20.0),
+            padding: const EdgeInsets.all(3.0),
             height: 300,
             width: 300,
+            decoration: BoxDecoration(
+                border: Border.all(color: Colors.blueAccent),
+                color: Color.fromARGB(255, 86, 147, 253),
+                borderRadius: BorderRadius.all(Radius.circular(20))),
             child: Column(
-              children: const [Text("STATUS")],
+              children: [
+                Align(
+                  alignment: Alignment.topCenter,
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(left: 15.0, top: 15.0),
+                        child: Text(
+                          "STATUS",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 40,
+                              color: Colors.white),
+                        ),
+                      ),
+                      Positioned(
+                        left: 0,
+                        child: Container(
+                          height: 5,
+                          width: 175,
+                          color: Color.fromARGB(255, 228, 220, 220)
+                              .withOpacity(0.8),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      isSafe
+                          ? Column(
+                              children: [
+                                Text(
+                                  "Safe",
+                                  style: TextStyle(color: Colors.greenAccent),
+                                ),
+                                Text(
+                                    "There has been no confirmed firearm activity near you.\n However, you can never be too safe! \n Check back on the app often to see if the status has changed!"),
+                              ],
+                            )
+                          : Column(
+                              children: [
+                                Text(
+                                  "DANGER",
+                                  style: TextStyle(
+                                      color: Color.fromARGB(255, 155, 21, 39)),
+                                ),
+                                Text(
+                                    "There has been confirmed firarem activity near you.\n Be prepared and keep a look out for any signs of danger")
+                              ],
+                            )
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
           //other things above
@@ -431,33 +524,6 @@ class _BodyState extends State<Body> {
             child: Column(
               children: [
                 Text("Recent Activity"),
-                // RealnewAdresses.length == 0
-                //     ? ((calculateDistance(
-                //                 double.parse(
-                //                     convertAddressToLatLonList(RealnewAdresses)
-                //                         .toString()
-                //                         .replaceAll(
-                //                             RegExp("\\[", unicode: true), "")
-                //                         .replaceAll(
-                //                             RegExp("\\]", unicode: true), "")
-                //                         .replaceAll(",", "")
-                //                         .split(" ")[0]),
-                //                 double.parse(
-                //                     convertAddressToLatLonList(RealnewAdresses)
-                //                         .toString()
-                //                         .replaceAll(
-                //                             RegExp("\\[", unicode: true), "")
-                //                         .replaceAll(
-                //                             RegExp("\\]", unicode: true), "")
-                //                         .replaceAll(",", "")
-                //                         .split(" ")[1]),
-                //                 homePos.latitude,
-                //                 homePos.longitude) <=
-                //             10)
-                //         ? Text("there has been a shooting near" +
-                //             RealnewAdresses[0])
-                //         : const Text(""))
-                //     : Text(""),
               ],
             ),
           ),
@@ -470,44 +536,56 @@ class _BodyState extends State<Body> {
                 itemBuilder: (BuildContext context, int index) {
                   var a = addShootings(Splitter(title!));
                   shooting xShooting = a[index];
-                  return Padding(
-                    padding: const EdgeInsets.only(
-                        left: 8.0, right: 8, bottom: 10, top: 10),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(25),
-                          boxShadow: [
-                            BoxShadow(
-                              offset: const Offset(0, 5),
-                              blurRadius: 5,
-                              color: const Color.fromARGB(255, 67, 66, 66)
-                                  .withOpacity(0.13),
-                            )
-                          ]),
-                      height: 40,
-                      width: MediaQuery.of(context).size.width,
-                      child: Row(
-                        children: [
-                          Text(
-                            xShooting.incidentDate,
-                            style: const TextStyle(fontSize: 13),
-                          ),
-                          const SizedBox(
-                            width: 15,
-                          ),
-                          Text("${xShooting.state}, ${xShooting.cityOrCounty}",
-                              overflow: TextOverflow.ellipsis,
-                              style: (xShooting.state + xShooting.cityOrCounty)
-                                          .length >
-                                      20
-                                  ? const TextStyle(fontSize: 15)
-                                  : const TextStyle(fontSize: 18)),
-                          const SizedBox(
-                            width: 5,
-                          ),
-                        ],
+                  return GestureDetector(
+                    onTap: () async {
+                      Uri url = Uri.parse(
+                          "https://gunviolencearchive.org/incident/" +
+                              xShooting.incidentID);
+
+                      await launchUrl(url,
+                          mode: LaunchMode.externalApplication);
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                          left: 8.0, right: 8, bottom: 10, top: 10),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(25),
+                            boxShadow: [
+                              BoxShadow(
+                                offset: const Offset(0, 5),
+                                blurRadius: 5,
+                                color: const Color.fromARGB(255, 67, 66, 66)
+                                    .withOpacity(0.13),
+                              )
+                            ]),
+                        height: 40,
+                        width: MediaQuery.of(context).size.width,
+                        child: Row(
+                          children: [
+                            Text(
+                              xShooting.incidentDate,
+                              style: const TextStyle(fontSize: 13),
+                            ),
+                            const SizedBox(
+                              width: 15,
+                            ),
+                            Text(
+                                "${xShooting.state}, ${xShooting.cityOrCounty}",
+                                overflow: TextOverflow.ellipsis,
+                                style:
+                                    (xShooting.state + xShooting.cityOrCounty)
+                                                .length >
+                                            20
+                                        ? const TextStyle(fontSize: 15)
+                                        : const TextStyle(fontSize: 18)),
+                            const SizedBox(
+                              width: 5,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   );
