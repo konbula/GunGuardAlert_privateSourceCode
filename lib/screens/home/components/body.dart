@@ -6,6 +6,7 @@ import 'package:html/parser.dart' as parser;
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
+
 import 'package:webview_flutter/webview_flutter.dart';
 
 //all other imports
@@ -23,13 +24,15 @@ import 'package:guntrackattempt1/screens/home/components/search_bar.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class Body extends StatefulWidget {
+  Body({required HomeAddress});
+  static String HomeAddress = "3510 Lake Ave, Wilmette, IL 60091";
   @override
   State<Body> createState() => _BodyState();
 }
 
 class _BodyState extends State<Body> {
   String? title;
-  String HomeAddress = "1943 N Gary Ave, Tulsa Oklahoma";
+
   void getWebsiteData(String rawHtml) async {
     dom.Document html = parser.parse(rawHtml);
     final title = html.querySelector('tbody')?.innerHtml.trim();
@@ -69,7 +72,7 @@ class _BodyState extends State<Body> {
     super.dispose();
   }
 
-  String initials = "";
+  String initials = "BK";
 
 // maps functions and variables
 
@@ -98,7 +101,7 @@ class _BodyState extends State<Body> {
 
   late Future blarg;
 
-  List RealnewAdresses = ["1206 sherwood rd glenview illinois"];
+  List RealnewAdresses = ["3510 Lake Ave, Wilmette, IL 60091"];
 
   void ChangeRealnewAdresses(List newThing) {
     setState(() {
@@ -139,7 +142,12 @@ class _BodyState extends State<Body> {
 
   void safetyChange(List blah) async {
     int tick = 0;
-    List safetyChangeDistance = await convertAddressToLatLonList([HomeAddress]);
+    List safetyChangeDistance =
+        await convertAddressToLatLonList([Body.HomeAddress]);
+
+    setState(() {
+      homePos = LatLng(safetyChangeDistance[0][0], safetyChangeDistance[0][1]);
+    });
 
     for (var i in blah) {
       List addressLocation = await convertAddressToLatLonList([i]);
@@ -164,6 +172,7 @@ class _BodyState extends State<Body> {
     }
 
     print(isSafe);
+    print(homePos);
   }
 
   Widget build(BuildContext context) {
@@ -247,7 +256,6 @@ class _BodyState extends State<Body> {
                         }
 
                         doSomething();
-                        doSomething();
 
                         List<Marker> _getMarkers() {
                           List<Marker> markers = [];
@@ -289,7 +297,6 @@ class _BodyState extends State<Body> {
                                     size: 60,
                                     color: Colors.blue,
                                   ))));
-
                           return markers;
                         }
 
@@ -303,7 +310,7 @@ class _BodyState extends State<Body> {
                                 radius: 100,
                                 useRadiusInMeter: true)
                           ];
-
+                          print("make new circle!");
                           return markers;
                         }
 
@@ -336,7 +343,7 @@ class _BodyState extends State<Body> {
                             child: FlutterMap(
                               mapController: mapController,
                               options: MapOptions(
-                                  center: LatLng(42.077, -87.8223),
+                                  center: homePos,
                                   zoom: 11,
                                   plugins: [MarkerClusterPlugin()],
                                   maxZoom: 13,
@@ -479,14 +486,11 @@ class _BodyState extends State<Body> {
                               color: Colors.white),
                         ),
                       ),
-                      Positioned(
-                        left: 0,
-                        child: Container(
-                          height: 5,
-                          width: 175,
-                          color: Color.fromARGB(255, 228, 220, 220)
-                              .withOpacity(0.8),
-                        ),
+                      Container(
+                        height: 5,
+                        width: 175,
+                        color:
+                            Color.fromARGB(255, 228, 220, 220).withOpacity(0.8),
                       ),
                       SizedBox(
                         height: 30,
