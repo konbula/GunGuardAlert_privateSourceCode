@@ -24,8 +24,8 @@ import 'package:guntrackattempt1/screens/home/components/search_bar.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class Body extends StatefulWidget {
-  Body({required HomeAddress});
   static String HomeAddress = "3510 Lake Ave, Wilmette, IL 60091";
+
   @override
   State<Body> createState() => _BodyState();
 }
@@ -72,8 +72,6 @@ class _BodyState extends State<Body> {
     super.dispose();
   }
 
-  String initials = "BK";
-
 // maps functions and variables
 
   double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
@@ -109,11 +107,20 @@ class _BodyState extends State<Body> {
     });
   }
 
+  MapController? mapController;
+  LatLng homePos = LatLng(42.07659479554499, -87.76737549957654);
+
+  bool isSafe = true;
+
   void initState() {
     blarg = convertAddressToLatLonList(RealnewAdresses);
 
-    reloadWebPagetimer = Timer.periodic(
-        const Duration(seconds: 60), (Timer t) => reloadWebView());
+    reloadWebPagetimer = Timer.periodic(const Duration(seconds: 30), (Timer t) {
+      reloadWebView();
+      // print("reloaded");
+      // print(Body.HomeAddress);
+      // print(homePos);
+    });
 
     super.initState();
 
@@ -132,47 +139,6 @@ class _BodyState extends State<Body> {
     //     RealnewAdresses = result;
     //   });
     // });
-    // print(RealnewAdresses);
-  }
-
-  MapController? mapController;
-  LatLng homePos = LatLng(42.07659479554499, -87.76737549957654);
-
-  bool isSafe = true;
-
-  void safetyChange(List blah) async {
-    int tick = 0;
-    List safetyChangeDistance =
-        await convertAddressToLatLonList([Body.HomeAddress]);
-
-    setState(() {
-      homePos = LatLng(safetyChangeDistance[0][0], safetyChangeDistance[0][1]);
-    });
-
-    for (var i in blah) {
-      List addressLocation = await convertAddressToLatLonList([i]);
-      if (calculateDistance(
-              safetyChangeDistance[0][0],
-              safetyChangeDistance[0][1],
-              addressLocation[0][0],
-              safetyChangeDistance[0][1]) <=
-          10) {
-        print(calculateDistance(
-            safetyChangeDistance[0][0],
-            safetyChangeDistance[0][1],
-            addressLocation[0][0],
-            safetyChangeDistance[0][1]));
-        tick += 1;
-      }
-    }
-    if (tick > 0) {
-      isSafe = false;
-    } else {
-      isSafe = true;
-    }
-
-    print(isSafe);
-    print(homePos);
   }
 
   Widget build(BuildContext context) {
@@ -202,12 +168,107 @@ class _BodyState extends State<Body> {
                 return finalList;
               }
 
+              void safetyChange(List blah) async {
+                int tick = 0;
+                List safetyChangeDistance =
+                    await convertAddressToLatLonList([Body.HomeAddress]);
+                print(safetyChangeDistance);
+                setState(() {
+                  homePos = LatLng(
+                      safetyChangeDistance[0][0], safetyChangeDistance[0][1]);
+                });
+
+                for (var i in blah) {
+                  List addressLocation = await convertAddressToLatLonList([i]);
+                  if (calculateDistance(
+                          safetyChangeDistance[0][0],
+                          safetyChangeDistance[0][1],
+                          addressLocation[0][0],
+                          safetyChangeDistance[0][1]) <=
+                      10) {
+                    print(calculateDistance(
+                        safetyChangeDistance[0][0],
+                        safetyChangeDistance[0][1],
+                        addressLocation[0][0],
+                        safetyChangeDistance[0][1]));
+                    tick += 1;
+                  }
+                }
+                if (tick > 0) {
+                  isSafe = false;
+                } else {
+                  isSafe = true;
+                }
+              }
+
+              debugPrint("HI HELLO MY NAME IS BOBLEM!");
+              debugPrint(Body.HomeAddress);
+              debugPrint(homePos.toString());
               safetyChange(newAdresses());
               ChangeRealnewAdresses(newAdresses());
             },
           ),
         ),
+        extendBodyBehindAppBar: true,
+        backgroundColor: Color.fromARGB(255, 255, 255, 255),
+        appBar: AppBar(
+          backgroundColor:
+              isSafe ? Colors.greenAccent : Color.fromARGB(255, 228, 28, 55),
+          elevation: 0.0,
+          //need leading
+          actions: [
+            profile_popup(
+                menulist: [
+                  //make the profile be able to drop down to reveal more info
+                  PopupMenuItem(
+                      child: ListTile(
+                    leading: const Icon(Icons.person),
+                    title: const Text("Profile"),
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => profilePage(),
+                      ),
+                    ),
+                  )),
+                  const PopupMenuItem(
+                      child: ListTile(
+                    leading: Icon(Icons.label_rounded),
+                    title: Text("Learn More"),
+                  )),
+                  const PopupMenuDivider(),
+                  const PopupMenuItem(
+                      child: ListTile(
+                    leading: Icon(Icons.info),
+                    title: Text("About"),
+                  )),
+                ],
+                icon: (profilePage.initial == "")
+                    ? CircleAvatar(
+                        backgroundColor: Colors.brown.shade800,
+                        child: const Icon(Icons.person),
+                      )
+                    : CircleAvatar(
+                        backgroundColor: Colors.brown.shade800,
+                        child: Text(profilePage.initial),
+                      ))
+          ],
+        ),
         body: SlidingUpPanel(
+            header: Container(
+              width: MediaQuery.of(context).size.width,
+              height: 60,
+              child: Center(
+                child: Container(
+                  height: 7,
+                  width: 50,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.grey,
+                  ),
+                ),
+              ),
+            ),
             panelBuilder: (sc) => PanelWidget(sc),
             //minHeight: 300,
             //maxHeight: 650,
@@ -252,14 +313,12 @@ class _BodyState extends State<Body> {
                         void doSomething() async {
                           List blah = await convertedToLatLongList;
                           cheese.add(blah);
-                          //debugPrint(cheese.toString());
                         }
 
                         doSomething();
 
                         List<Marker> _getMarkers() {
                           List<Marker> markers = [];
-
                           //experiment
 
                           List blargList = snapshot.data
@@ -269,17 +328,34 @@ class _BodyState extends State<Body> {
                               .replaceAll(",", "")
                               .split(" ");
 
-                          for (var x = 0; x < blargList.length; x++) {
+                          for (int x = 0; x < blargList.length; x++) {
                             if ((x % 2 == 0) &
                                 (blargList.length > 1) &
                                 blargList.length.isEven) {
                               markers.add(Marker(
                                   point: LatLng(double.parse(blargList[x]),
                                       double.parse(blargList[x + 1])),
-                                  builder: ((context) => Container(
-                                        decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: Colors.red),
+                                  builder: ((context) => GestureDetector(
+                                        onTap: (() async {
+                                          int poo = (x / 2).round();
+
+                                          var a =
+                                              addShootings(Splitter(title!));
+                                          shooting xShooting = a[poo];
+
+                                          Uri url = Uri.parse(
+                                              "https://gunviolencearchive.org/incident/" +
+                                                  xShooting.incidentID);
+
+                                          await launchUrl(url,
+                                              mode: LaunchMode
+                                                  .externalApplication);
+                                        }),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: Colors.red),
+                                        ),
                                       ))));
                             }
                           }
@@ -310,7 +386,7 @@ class _BodyState extends State<Body> {
                                 radius: 100,
                                 useRadiusInMeter: true)
                           ];
-                          print("make new circle!");
+
                           return markers;
                         }
 
@@ -339,7 +415,7 @@ class _BodyState extends State<Body> {
                         //distance method
 
                         return Stack(children: [
-                          Expanded(
+                          Flexible(
                             child: FlutterMap(
                               mapController: mapController,
                               options: MapOptions(
@@ -397,52 +473,52 @@ class _BodyState extends State<Body> {
                               padding: const EdgeInsets.all(0.0),
                               child: Column(
                                 children: [
-                                  Row(
-                                    children: [
-                                      const Expanded(child: homeSearchBar()),
-                                      profile_popup(
-                                          menulist: [
-                                            //make the profile be able to drop down to reveal more info
-                                            PopupMenuItem(
-                                                child: ListTile(
-                                              leading: const Icon(Icons.person),
-                                              title: const Text("Profile"),
-                                              onTap: () => Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (_) => profilePage(
-                                                    initial: initials,
-                                                  ),
-                                                ),
-                                              ),
-                                            )),
-                                            const PopupMenuItem(
-                                                child: ListTile(
-                                              leading:
-                                                  Icon(Icons.label_rounded),
-                                              title: Text("Learn More"),
-                                            )),
-                                            const PopupMenuDivider(),
-                                            const PopupMenuItem(
-                                                child: ListTile(
-                                              leading: Icon(Icons.info),
-                                              title: Text("About"),
-                                            )),
-                                          ],
-                                          icon: (initials == "")
-                                              ? CircleAvatar(
-                                                  backgroundColor:
-                                                      Colors.brown.shade800,
-                                                  child:
-                                                      const Icon(Icons.person),
-                                                )
-                                              : CircleAvatar(
-                                                  backgroundColor:
-                                                      Colors.brown.shade800,
-                                                  child: const Text("BK"),
-                                                ))
-                                    ],
-                                  ),
+                                  // Row(
+                                  //   children: [
+                                  //     const Expanded(child: homeSearchBar()),
+                                  //     profile_popup(
+                                  //         menulist: [
+                                  //           //make the profile be able to drop down to reveal more info
+                                  //           PopupMenuItem(
+                                  //               child: ListTile(
+                                  //             leading: const Icon(Icons.person),
+                                  //             title: const Text("Profile"),
+                                  //             onTap: () => Navigator.push(
+                                  //               context,
+                                  //               MaterialPageRoute(
+                                  //                 builder: (_) => profilePage(
+                                  //                   initial: initials,
+                                  //                 ),
+                                  //               ),
+                                  //             ),
+                                  //           )),
+                                  //           const PopupMenuItem(
+                                  //               child: ListTile(
+                                  //             leading:
+                                  //                 Icon(Icons.label_rounded),
+                                  //             title: Text("Learn More"),
+                                  //           )),
+                                  //           const PopupMenuDivider(),
+                                  //           const PopupMenuItem(
+                                  //               child: ListTile(
+                                  //             leading: Icon(Icons.info),
+                                  //             title: Text("About"),
+                                  //           )),
+                                  //         ],
+                                  //         icon: (initials == "")
+                                  //             ? CircleAvatar(
+                                  //                 backgroundColor:
+                                  //                     Colors.brown.shade800,
+                                  //                 child:
+                                  //                     const Icon(Icons.person),
+                                  //               )
+                                  //             : CircleAvatar(
+                                  //                 backgroundColor:
+                                  //                     Colors.brown.shade800,
+                                  //                 child: const Text("BK"),
+                                  //               ))
+                                  //   ],
+                                  // ),
                                 ],
                               ),
                             ),
@@ -499,22 +575,51 @@ class _BodyState extends State<Body> {
                           ? Column(
                               children: [
                                 Text(
-                                  "Safe",
-                                  style: TextStyle(color: Colors.greenAccent),
+                                  "SAFE",
+                                  style: TextStyle(
+                                      color: Colors.greenAccent,
+                                      fontSize: 30,
+                                      letterSpacing: 5,
+                                      fontWeight: FontWeight.w600),
                                 ),
-                                Text(
-                                    "There has been no confirmed firearm activity near you.\n However, you can never be too safe! \n Check back on the app often to see if the status has changed!"),
+                                SizedBox(
+                                  height: 15,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: Text(
+                                    "There has been no confirmed firearm activity near you. However, you can never be too safe! Check back on the app often to see if the status has changed!",
+                                    style: TextStyle(
+                                        color:
+                                            Color.fromARGB(255, 241, 239, 239),
+                                        fontSize: 20),
+                                  ),
+                                ),
                               ],
                             )
                           : Column(
                               children: [
                                 Text(
-                                  "DANGER",
+                                  "POSSIBLE DANGER",
                                   style: TextStyle(
-                                      color: Color.fromARGB(255, 155, 21, 39)),
+                                      color: Color.fromARGB(255, 228, 28, 55),
+                                      fontSize: 30,
+                                      letterSpacing: 5,
+                                      fontWeight: FontWeight.w600),
                                 ),
-                                Text(
-                                    "There has been confirmed firarem activity near you.\n Be prepared and keep a look out for any signs of danger")
+                                SizedBox(
+                                  height: 15,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: Text(
+                                    "There has been confirmed firearm activity near you. Be prepared and keep a look out for any signs of danger.",
+                                    style: TextStyle(
+                                        color:
+                                            Color.fromARGB(255, 241, 239, 239),
+                                        fontSize: 20),
+                                  ),
+                                )
                               ],
                             )
                     ],
@@ -527,9 +632,26 @@ class _BodyState extends State<Body> {
           Container(
             child: Column(
               children: [
-                Text("Recent Activity"),
+                Text(
+                  "Recent Activity",
+                  style: TextStyle(fontSize: 40, fontWeight: FontWeight.w500),
+                ),
               ],
             ),
+          ),
+          Align(
+            alignment: Alignment.topCenter,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 10),
+              child: Container(
+                width: MediaQuery.of(context).size.width * 0.55,
+                height: 1,
+                color: Colors.grey,
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 30,
           ),
           Expanded(
             child: ListView.builder(

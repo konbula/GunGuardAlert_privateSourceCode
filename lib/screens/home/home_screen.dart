@@ -10,9 +10,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: Body(
-      HomeAddress: "chicago illinois",
-    ));
+    return Scaffold(body: Body());
   }
 }
