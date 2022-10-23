@@ -115,9 +115,9 @@ class _BodyState extends State<Body> {
   void initState() {
     blarg = convertAddressToLatLonList(RealnewAdresses);
 
-    reloadWebPagetimer = Timer.periodic(const Duration(seconds: 30), (Timer t) {
+    reloadWebPagetimer = Timer.periodic(const Duration(seconds: 60), (Timer t) {
       reloadWebView();
-      // print("reloaded");
+      print("reloaded");
       // print(Body.HomeAddress);
       // print(homePos);
     });
@@ -258,6 +258,7 @@ class _BodyState extends State<Body> {
             header: Container(
               width: MediaQuery.of(context).size.width,
               height: 60,
+              color: Colors.white,
               child: Center(
                 child: Container(
                   height: 7,
@@ -277,8 +278,7 @@ class _BodyState extends State<Body> {
               topRight: Radius.circular(24.0),
             ),
             body: SafeArea(
-                child: Expanded(
-                    child: Stack(children: [
+                child: (Stack(children: [
               title == null
                   ? const Center(child: CircularProgressIndicator())
                   : FutureBuilder<List>(
@@ -336,27 +336,35 @@ class _BodyState extends State<Body> {
                                   point: LatLng(double.parse(blargList[x]),
                                       double.parse(blargList[x + 1])),
                                   builder: ((context) => GestureDetector(
-                                        onTap: (() async {
-                                          int poo = (x / 2).round();
+                                      onTap: (() async {
+                                        int poo = (x / 2).round();
 
-                                          var a =
-                                              addShootings(Splitter(title!));
-                                          shooting xShooting = a[poo];
+                                        var a = addShootings(Splitter(title!));
+                                        shooting xShooting = a[poo];
 
-                                          Uri url = Uri.parse(
-                                              "https://gunviolencearchive.org/incident/" +
-                                                  xShooting.incidentID);
+                                        Uri url = Uri.parse(
+                                            "https://gunviolencearchive.org/incident/" +
+                                                xShooting.incidentID);
 
-                                          await launchUrl(url,
-                                              mode: LaunchMode
-                                                  .externalApplication);
-                                        }),
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              color: Colors.red),
+                                        await launchUrl(url,
+                                            mode:
+                                                LaunchMode.externalApplication);
+                                      }),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: calculateDistance(
+                                                      homePos.latitude,
+                                                      homePos.longitude,
+                                                      double.parse(
+                                                          blargList[x]),
+                                                      double.parse(
+                                                          blargList[x + 1])) <=
+                                                  10
+                                              ? Colors.red
+                                              : Colors.blue,
                                         ),
-                                      ))));
+                                      )))));
                             }
                           }
                           return markers;
@@ -588,7 +596,7 @@ class _BodyState extends State<Body> {
                                 Padding(
                                   padding: const EdgeInsets.all(10.0),
                                   child: Text(
-                                    "There has been no confirmed firearm activity near you. However, you can never be too safe! Check back on the app often to see if the status has changed!",
+                                    "There has been no confirmed firearm activity near you. Check back to see if the status has changed.",
                                     style: TextStyle(
                                         color:
                                             Color.fromARGB(255, 241, 239, 239),
@@ -613,7 +621,7 @@ class _BodyState extends State<Body> {
                                 Padding(
                                   padding: const EdgeInsets.all(10.0),
                                   child: Text(
-                                    "There has been confirmed firearm activity near you. Be prepared and keep a look out for any signs of danger.",
+                                    "There has been confirmed firearm activity within 10 miles of you. Be prepared and keep a look out for any signs of danger.",
                                     style: TextStyle(
                                         color:
                                             Color.fromARGB(255, 241, 239, 239),
@@ -698,15 +706,17 @@ class _BodyState extends State<Body> {
                             const SizedBox(
                               width: 15,
                             ),
-                            Text(
-                                "${xShooting.state}, ${xShooting.cityOrCounty}",
-                                overflow: TextOverflow.ellipsis,
-                                style:
-                                    (xShooting.state + xShooting.cityOrCounty)
-                                                .length >
-                                            20
-                                        ? const TextStyle(fontSize: 15)
-                                        : const TextStyle(fontSize: 18)),
+                            Flexible(
+                              child: Text(
+                                  "${xShooting.state}, ${xShooting.cityOrCounty}",
+                                  overflow: TextOverflow.ellipsis,
+                                  style:
+                                      (xShooting.state + xShooting.cityOrCounty)
+                                                  .length >
+                                              20
+                                          ? const TextStyle(fontSize: 15)
+                                          : const TextStyle(fontSize: 18)),
+                            ),
                             const SizedBox(
                               width: 5,
                             ),

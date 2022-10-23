@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-
+import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/link.dart';
 import '../../../models/article_model.dart';
 import '../../../service/recent_api_service.dart';
 
@@ -29,15 +30,17 @@ Widget recent_tab() {
 
 Widget customListTile(Article article, BuildContext context) {
   return InkWell(
-    onTap: () {
-      print("work on this");
+    onTap: () async {
+      Uri url = Uri.parse(article.url ?? "");
+
+      await launchUrl(url, mode: LaunchMode.externalApplication);
     },
     child: Container(
-      margin: const EdgeInsets.all(12.0),
+      margin: const EdgeInsets.only(top: 12.0),
       padding: const EdgeInsets.all(8.0),
       decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(12.0),
+          border: Border.all(color: Color.fromARGB(136, 0, 0, 0)),
           boxShadow: const [
             BoxShadow(
               color: Colors.black12,
@@ -45,47 +48,76 @@ Widget customListTile(Article article, BuildContext context) {
             ),
           ]),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            height: 200.0,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              //let's add the height
+          Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(right: 8.0),
+                child: Container(
+                    width: MediaQuery.of(context).size.width * 0.50,
+                    child: Text(
+                      article.title,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.normal,
+                        fontSize: 18.0,
+                      ),
+                    )),
+              ),
+              Container(
+                height: MediaQuery.of(context).size.height * 0.15,
+                width: MediaQuery.of(context).size.width * 0.42,
+                decoration: BoxDecoration(
+                  //let's add the height
 
-              image: DecorationImage(
-                  image: NetworkImage(article.urlToImage ?? ""),
-                  fit: BoxFit.cover),
-              borderRadius: BorderRadius.circular(12.0),
-            ),
+                  image: DecorationImage(
+                      image: NetworkImage(article.urlToImage ?? ""),
+                      fit: BoxFit.cover),
+                  borderRadius: BorderRadius.circular(5.0),
+                ),
+              ),
+            ],
           ),
-          const SizedBox(
-            height: 8.0,
-          ),
-          Container(
-            padding: const EdgeInsets.all(6.0),
-            decoration: BoxDecoration(
-              color: Colors.red,
-              borderRadius: BorderRadius.circular(30.0),
-            ),
-            child: Text(
-              article.source?.name ?? "",
-              style: const TextStyle(
-                color: Colors.white,
+          Padding(
+            padding: const EdgeInsets.only(top: 12.0, left: 0),
+            child: Align(
+              alignment: Alignment.topLeft,
+              child: Container(
+                height: MediaQuery.of(context).size.height * 0.05,
+                child: Flexible(
+                  child: Text(
+                    overflow: TextOverflow.ellipsis,
+                    article.description ?? "",
+                    style: const TextStyle(
+                      color: Color.fromARGB(255, 41, 41, 41),
+                      fontWeight: FontWeight.w400,
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
+                ),
               ),
             ),
           ),
-          const SizedBox(
-            height: 8.0,
+          Row(
+            children: [
+              Text(
+                article.source?.name ?? "",
+                style: const TextStyle(
+                  fontWeight: FontWeight.w400,
+                  fontSize: 16.0,
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(left: 10.0),
+                child: Text(
+                  article.publishedAt?.substring(0, 10) ?? "",
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w300,
+                    fontSize: 16.0,
+                  ),
+                ),
+              ),
+            ],
           ),
-          Text(
-            article.title,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 16.0,
-            ),
-          )
         ],
       ),
     ),
