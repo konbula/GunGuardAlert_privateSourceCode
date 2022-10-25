@@ -1,3 +1,6 @@
+import 'dart:developer';
+import "package:guntrackattempt1/providers/address_provider.dart";
+import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:guntrackattempt1/screens/home/components/body.dart';
 
@@ -158,6 +161,7 @@ class _profilePageState extends State<profilePage> {
               //     MaterialPageRoute(
               //         builder: (_) =>
               //             Body(HomeAddress: value, initials: widget.initial)));
+              context.read<addressChange>().ChangeHomeAdress(value);
               setState(() {
                 Body.HomeAddress = value;
               });

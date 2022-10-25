@@ -6,9 +6,9 @@ import 'package:html/parser.dart' as parser;
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
-
+import "package:guntrackattempt1/providers/address_provider.dart";
 import 'package:webview_flutter/webview_flutter.dart';
-
+import 'package:provider/provider.dart';
 //all other imports
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/link.dart';
@@ -118,27 +118,39 @@ class _BodyState extends State<Body> {
     reloadWebPagetimer = Timer.periodic(const Duration(seconds: 60), (Timer t) {
       reloadWebView();
       print("reloaded");
+      print(context.watch<addressChange>().getHomeAddress());
       // print(Body.HomeAddress);
       // print(homePos);
     });
 
     super.initState();
+  }
 
-    // List newAdresses() {
-    //   var b = addShootings(Splitter(title!));
-    //   List finalList = [];
-    //   for (var i = 0; i < b.length; i++) {
-    //     finalList
-    //         .add(b[i].state + " " + b[i].cityOrCounty + " " + b[i].address);
-    //   }
-    //   return finalList;
-    // }
-
-    // convertAddressToLatLonList(newAdresses()).then((List result) {
-    //   setState(() {
-    //     RealnewAdresses = result;
-    //   });
-    // });
+  void safetyChange(List blah) async {
+    int tick = 0;
+    List safetyChangeDistance = await convertAddressToLatLonList(
+        [context.watch<addressChange>().getHomeAddress()]);
+    for (var i in blah) {
+      List addressLocation = await convertAddressToLatLonList([i]);
+      if (calculateDistance(
+              safetyChangeDistance[0][0],
+              safetyChangeDistance[0][1],
+              addressLocation[0][0],
+              safetyChangeDistance[0][1]) <=
+          10) {
+        print(calculateDistance(
+            safetyChangeDistance[0][0],
+            safetyChangeDistance[0][1],
+            addressLocation[0][0],
+            safetyChangeDistance[0][1]));
+        tick += 1;
+      }
+    }
+    if (tick > 0) {
+      isSafe = false;
+    } else {
+      isSafe = true;
+    }
   }
 
   Widget build(BuildContext context) {
@@ -168,43 +180,6 @@ class _BodyState extends State<Body> {
                 return finalList;
               }
 
-              void safetyChange(List blah) async {
-                int tick = 0;
-                List safetyChangeDistance =
-                    await convertAddressToLatLonList([Body.HomeAddress]);
-                print(safetyChangeDistance);
-                setState(() {
-                  homePos = LatLng(
-                      safetyChangeDistance[0][0], safetyChangeDistance[0][1]);
-                });
-
-                for (var i in blah) {
-                  List addressLocation = await convertAddressToLatLonList([i]);
-                  if (calculateDistance(
-                          safetyChangeDistance[0][0],
-                          safetyChangeDistance[0][1],
-                          addressLocation[0][0],
-                          safetyChangeDistance[0][1]) <=
-                      10) {
-                    print(calculateDistance(
-                        safetyChangeDistance[0][0],
-                        safetyChangeDistance[0][1],
-                        addressLocation[0][0],
-                        safetyChangeDistance[0][1]));
-                    tick += 1;
-                  }
-                }
-                if (tick > 0) {
-                  isSafe = false;
-                } else {
-                  isSafe = true;
-                }
-              }
-
-              debugPrint("HI HELLO MY NAME IS BOBLEM!");
-              debugPrint(Body.HomeAddress);
-              debugPrint(homePos.toString());
-              safetyChange(newAdresses());
               ChangeRealnewAdresses(newAdresses());
             },
           ),
@@ -293,6 +268,18 @@ class _BodyState extends State<Body> {
                         //     .replaceAll(RegExp("\\]", unicode: true), "")
                         //     .replaceAll(",", "")
                         //     .split(" ")[1]);
+                        print(homePos);
+                        void homPosThing() async {
+                          List a = await convertAddressToLatLonList([
+                            context.watch<addressChange>().getHomeAddress()
+                          ]);
+                          homePos = LatLng(a[0][0], a[0][1]);
+                        }
+
+                        homPosThing();
+                        print(homePos);
+
+//trying something wierd here
 
                         List newAdresses() {
                           var b = addShootings(Splitter(title!));
@@ -306,6 +293,8 @@ class _BodyState extends State<Body> {
                           }
                           return finalList;
                         }
+
+                        safetyChange(newAdresses());
 
                         Future<List> convertedToLatLongList =
                             convertAddressToLatLonList(newAdresses());
