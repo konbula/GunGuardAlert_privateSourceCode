@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:guntrackattempt1/screens/home/components/aboutPage.dart';
+import 'package:guntrackattempt1/screens/home/components/body.dart';
+import 'package:guntrackattempt1/screens/home/components/profile.dart';
+import 'package:guntrackattempt1/screens/home/components/profile_popup.dart';
 
 import 'components/body.dart';
 
@@ -12,9 +16,54 @@ class _dataScreenState extends State<dataScreen> {
   int _currentTab = 0;
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       backgroundColor: Color.fromARGB(69, 157, 200, 245),
-      body: Body(),
+      body: DBody(),
+      appBar: AppBar(
+        // leading: Image.asset(
+        //   'assets/images/GunGuardAlert.png',
+        // ),
+        // leadingWidth: 400,
+        backgroundColor: BodyState.isSafe
+            ? Colors.greenAccent
+            : Color.fromARGB(255, 243, 89, 109),
+        elevation: 0.0,
+        //need leading
+        actions: [
+          profile_popup(
+              menulist: [
+                //make the profile be able to drop down to reveal more info
+                PopupMenuItem(
+                    child: ListTile(
+                  leading: const Icon(Icons.person),
+                  title: const Text("Profile"),
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => profilePage(),
+                    ),
+                  ),
+                )),
+
+                const PopupMenuDivider(),
+                PopupMenuItem(
+                    child: ListTile(
+                  leading: Icon(Icons.info),
+                  title: Text("About"),
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => AboutPage(),
+                    ),
+                  ),
+                )),
+              ],
+              icon: CircleAvatar(
+                backgroundColor: Colors.brown.shade800,
+                child: const Icon(Icons.person),
+              ))
+        ],
+      ),
     );
   }
 }

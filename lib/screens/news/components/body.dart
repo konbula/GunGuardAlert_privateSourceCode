@@ -4,14 +4,14 @@ import 'package:guntrackattempt1/screens/news/components/news_search_bar.dart';
 import 'package:guntrackattempt1/screens/news/components/recent_tab.dart';
 import 'package:guntrackattempt1/screens/news/components/shootings_tab.dart';
 
-class Body extends StatefulWidget {
-  const Body({Key? key}) : super(key: key);
+class NBody extends StatefulWidget {
+  const NBody({Key? key}) : super(key: key);
 
   @override
-  State<Body> createState() => _BodyState();
+  State<NBody> createState() => _NBodyState();
 }
 
-class _BodyState extends State<Body> with TickerProviderStateMixin {
+class _NBodyState extends State<NBody> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     TabController tabCont = TabController(length: 3, vsync: this);
@@ -21,18 +21,19 @@ class _BodyState extends State<Body> with TickerProviderStateMixin {
         const SizedBox(
           height: 10,
         ),
-        Padding(
-          padding: const EdgeInsets.only(left: 10.0, right: 15),
-          child: Row(
-            children: const [
-              Expanded(child: newsSearchBar()),
-              Icon(
-                Icons.menu,
-                size: 35,
-              )
-            ],
-          ),
-        ),
+        // Padding(
+        //   padding: const EdgeInsets.only(left: 10.0, right: 15),
+        //   child: Row(
+        //     children: const [
+        //       Expanded(child: newsSearchBar()),
+        //       Icon(
+        //         Icons.menu,
+        //         size: 35,
+        //       )
+        //     ],
+        //   ),
+        // ),
+
         const SizedBox(
           height: 10,
         ),

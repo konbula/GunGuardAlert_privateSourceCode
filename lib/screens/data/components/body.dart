@@ -6,14 +6,14 @@ import 'package:guntrackattempt1/screens/data/components/suicide_carousel.dart';
 
 import '../../data_tile/data_tile_screen.dart';
 
-class Body extends StatefulWidget {
-  const Body({Key? key}) : super(key: key);
+class DBody extends StatefulWidget {
+  const DBody({Key? key}) : super(key: key);
 
   @override
-  State<Body> createState() => _BodyState();
+  State<DBody> createState() => _DBodyState();
 }
 
-class _BodyState extends State<Body> {
+class _DBodyState extends State<DBody> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -22,21 +22,21 @@ class _BodyState extends State<Body> {
           SizedBox(
             height: 10,
           ),
-          Padding(
-            padding: const EdgeInsets.only(
-              left: 10.0,
-              right: 10,
-            ),
-            child: Row(
-              children: [
-                Expanded(child: dataSearchBar()),
-                CircleAvatar(
-                  backgroundColor: Colors.brown.shade800,
-                  child: const Text('AH'),
-                )
-              ],
-            ),
-          ),
+          // Padding(
+          //   padding: const EdgeInsets.only(
+          //     left: 10.0,
+          //     right: 10,
+          //   ),
+          //   child: Row(
+          //     children: [
+          //       Expanded(child: dataSearchBar()),
+          //       CircleAvatar(
+          //         backgroundColor: Colors.brown.shade800,
+          //         child: const Text('AH'),
+          //       )
+          //     ],
+          //   ),
+          // ),
           homocideHeader(),
           homocideCarousel(),
           SizedBox(

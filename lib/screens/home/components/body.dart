@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/scheduler.dart';
 import 'package:guntrackattempt1/models/shooting_info_model.dart';
+import 'package:guntrackattempt1/screens/home/components/aboutPage.dart';
 import 'package:html/parser.dart' as parser;
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart';
@@ -27,10 +28,10 @@ class Body extends StatefulWidget {
   static String HomeAddress = "3510 Lake Ave, Wilmette, IL 60091";
 
   @override
-  State<Body> createState() => _BodyState();
+  State<Body> createState() => BodyState();
 }
 
-class _BodyState extends State<Body> {
+class BodyState extends State<Body> {
   String? title;
 
   void getWebsiteData(String rawHtml) async {
@@ -110,7 +111,7 @@ class _BodyState extends State<Body> {
   MapController? mapController;
   LatLng homePos = LatLng(42.07659479554499, -87.76737549957654);
 
-  bool isSafe = true;
+  static bool isSafe = true;
 
   void initState() {
     blarg = convertAddressToLatLonList(RealnewAdresses);
@@ -187,8 +188,16 @@ class _BodyState extends State<Body> {
         extendBodyBehindAppBar: true,
         backgroundColor: Color.fromARGB(255, 255, 255, 255),
         appBar: AppBar(
-          backgroundColor:
-              isSafe ? Colors.greenAccent : Color.fromARGB(255, 228, 28, 55),
+          shadowColor: Colors.black,
+          bottomOpacity: 0.8,
+          leading: Padding(
+            padding: const EdgeInsets.only(left: 10.0),
+            child: Image.asset(
+              'assets/images/GunGuardAlert.png',
+            ),
+          ),
+          leadingWidth: 500,
+          backgroundColor: Colors.white,
           elevation: 0.0,
           //need leading
           actions: [
@@ -206,27 +215,24 @@ class _BodyState extends State<Body> {
                       ),
                     ),
                   )),
-                  const PopupMenuItem(
-                      child: ListTile(
-                    leading: Icon(Icons.label_rounded),
-                    title: Text("Learn More"),
-                  )),
+
                   const PopupMenuDivider(),
-                  const PopupMenuItem(
+                  PopupMenuItem(
                       child: ListTile(
                     leading: Icon(Icons.info),
                     title: Text("About"),
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => AboutPage(),
+                      ),
+                    ),
                   )),
                 ],
-                icon: (profilePage.initial == "")
-                    ? CircleAvatar(
-                        backgroundColor: Colors.brown.shade800,
-                        child: const Icon(Icons.person),
-                      )
-                    : CircleAvatar(
-                        backgroundColor: Colors.brown.shade800,
-                        child: Text(profilePage.initial),
-                      ))
+                icon: CircleAvatar(
+                  backgroundColor: Colors.brown.shade800,
+                  child: const Icon(Icons.person),
+                ))
           ],
         ),
         body: SlidingUpPanel(
@@ -368,7 +374,8 @@ class _BodyState extends State<Body> {
                               builder: ((context) => Icon(
                                     Icons.home,
                                     size: 60,
-                                    color: Colors.blue,
+                                    color:
+                                        isSafe ? Colors.blue : Colors.redAccent,
                                   ))));
                           return markers;
                         }
@@ -412,57 +419,55 @@ class _BodyState extends State<Body> {
                         //distance method
 
                         return Stack(children: [
-                          Flexible(
-                            child: FlutterMap(
-                              mapController: mapController,
-                              options: MapOptions(
-                                  center: homePos,
-                                  zoom: 11,
-                                  plugins: [MarkerClusterPlugin()],
-                                  maxZoom: 13,
-                                  minZoom: 4),
-                              layers: [
-                                TileLayerOptions(
-                                  minZoom: 1,
-                                  maxZoom: 13,
-                                  backgroundColor: Colors.black,
-                                  urlTemplate:
-                                      'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                          FlutterMap(
+                            mapController: mapController,
+                            options: MapOptions(
+                                center: homePos,
+                                zoom: 11,
+                                plugins: [MarkerClusterPlugin()],
+                                maxZoom: 13,
+                                minZoom: 4),
+                            layers: [
+                              TileLayerOptions(
+                                minZoom: 1,
+                                maxZoom: 13,
+                                backgroundColor: Colors.black,
+                                urlTemplate:
+                                    'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                              ),
+                              MarkerLayerOptions(
+                                markers: _getAreaMarkers(),
+                              ),
+                              CircleLayerOptions(circles: homeCircle()),
+                              MarkerLayerOptions(
+                                markers: _getMarkers(),
+                              ),
+                              MarkerLayerOptions(
+                                markers: _getHomeMarker(),
+                              ),
+                              MarkerClusterLayerOptions(
+                                maxClusterRadius: 10,
+                                disableClusteringAtZoom: 16,
+                                size: Size(50, 50),
+                                fitBoundsOptions: FitBoundsOptions(
+                                  padding: EdgeInsets.all(50),
                                 ),
-                                MarkerLayerOptions(
-                                  markers: _getMarkers(),
-                                ),
-                                MarkerLayerOptions(
-                                  markers: _getHomeMarker(),
-                                ),
-                                MarkerLayerOptions(
-                                  markers: _getAreaMarkers(),
-                                ),
-                                CircleLayerOptions(circles: homeCircle()),
-                                MarkerClusterLayerOptions(
-                                  maxClusterRadius: 10,
-                                  disableClusteringAtZoom: 16,
-                                  size: Size(50, 50),
-                                  fitBoundsOptions: FitBoundsOptions(
-                                    padding: EdgeInsets.all(50),
-                                  ),
-                                  markers: _getMarkers(),
-                                  polygonOptions: PolygonOptions(
-                                      borderColor: Colors.blueAccent,
-                                      color: Colors.black12,
-                                      borderStrokeWidth: 3),
-                                  builder: (context, markers) {
-                                    return Container(
-                                      alignment: Alignment.center,
-                                      decoration: BoxDecoration(
-                                          color: Colors.orange,
-                                          shape: BoxShape.circle),
-                                      child: Text('${markers.length}'),
-                                    );
-                                  },
-                                ),
-                              ],
-                            ),
+                                markers: _getMarkers(),
+                                polygonOptions: PolygonOptions(
+                                    borderColor: Colors.blueAccent,
+                                    color: Colors.black12,
+                                    borderStrokeWidth: 3),
+                                builder: (context, markers) {
+                                  return Container(
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                        color: Colors.orange,
+                                        shape: BoxShape.circle),
+                                    child: Text('${markers.length}'),
+                                  );
+                                },
+                              ),
+                            ],
                           ),
                           Align(
                             alignment: Alignment.topCenter,
@@ -647,6 +652,28 @@ class _BodyState extends State<Body> {
               ),
             ),
           ),
+          SizedBox(
+            height: 30,
+          ),
+          Padding(
+            padding: EdgeInsets.only(left: 18, bottom: 27),
+            child: Text(
+              "All data and information of markers is from The Gun Violence Archive public database.",
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
+            ),
+          ),
+          Align(
+            alignment: Alignment.topCenter,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 10),
+              child: Container(
+                width: MediaQuery.of(context).size.width * 0.55,
+                height: 1,
+                color: Colors.grey,
+              ),
+            ),
+          ),
+
           SizedBox(
             height: 30,
           ),

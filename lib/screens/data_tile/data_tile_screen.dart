@@ -63,7 +63,8 @@ class _DataTileScreenState extends State<DataTileScreen> {
               ],
             ),
           ),
-          GraphThing(),
+          //will bring back graphthing once everything else is worked out
+          //GraphThing(),
         ])),
       ),
     );
