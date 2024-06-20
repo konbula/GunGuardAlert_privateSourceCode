@@ -4,7 +4,7 @@ import 'package:http/http.dart';
 
 class ApiService {
   final endPointUrl =
-      "https://newsapi.org/v2/everything?q=gun+legislation&apiKey=8804b4db9fe64faf9f52ef7c7f6e7d87";
+      "https://newsapi.org/v2/everything?q=gun+legislation&apiKey=";
 
   Future<List<Article>> getArticle() async {
     Response res = await get(Uri.parse(endPointUrl));
